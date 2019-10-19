@@ -1,0 +1,27 @@
+version: '3.7'
+services:
+  ntpd:
+    image: flee999/ntpd-alpine:latest
+    container_name: ntpd-alpine
+    build:
+      context: .
+      dockerfile: Dockerfile
+    cap_add:
+      - SYS_TIME
+      - SYS_NICE
+    deploy:
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 768M
+        reservations:
+          cpus: '0.50'
+          memory: 512M
+    volumes:
+      - ./assets/ntpd.conf:/etc/ntpd.conf:ro
+    ports:
+      - "${EXPOSED_PORT}:123/udp"
+    environment:
+      - EXPOSED_PORT=${EXPOSED_PORT}
