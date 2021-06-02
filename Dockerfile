@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.12
 
 # latest certs
 RUN apk add ca-certificates && update-ca-certificates
@@ -22,7 +22,7 @@ EXPOSE 123/udp
 HEALTHCHECK CMD ntpctl -s status || exit 1
 
 # start ntpd -v verbose, -d foreground to stdout, -s set time at startup
-ENTRYPOINT [ "/usr/sbin/ntpd", "-v", "-d", "-s" ]
+CMD [ "/usr/sbin/ntpd", "-v", "-d", "-s" ]
 
 # if debugging
 #ENTRYPOINT [ "/bin/ash" ]

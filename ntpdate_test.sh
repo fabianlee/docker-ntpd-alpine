@@ -19,17 +19,20 @@ if [ -z "$IP" ]; then
   echo "ERROR could not find IP address of container $imagename"
   exit 2
 fi
+echo "IP address of container is $IP"
 
 # ntpdate needs to be installed
-#if [ ! -x "$(command -v ntpdate)" ]; then
-#  echo "ERROR could not find ntpdate binary, try 'sudo apt-get install ntpdate'"
+#ntpdate_path=$(which ntpdate)
+#if [ -z "$ntpdate_path" ]; then
+#  echo "ERROR could not find ntpdate, try 'sudo apt-get install ntpdate'"
 #  exit 3
 #fi
 
 # keep running ntpctl in loop
 echo "Running ntpdate against $IP at port $exposedport...."
 while : ; do
-  status=$(docker exec -it $imagename ntpctl -s status)
+  docker exec -it $imagename /bin/sh -c '/usr/sbin/ntpctl -s peers'
+  status=$(docker exec -it $imagename /usr/sbin/ntpctl -s status)
   echo $status
   echo $status | grep -vq "unsynced"
   if [ $? -eq 0 ]; then 
